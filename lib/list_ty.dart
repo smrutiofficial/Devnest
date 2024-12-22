@@ -86,13 +86,17 @@ class _ListTyState extends State<ListTy> {
       // processStatus = "processing";
       // });
       // Open GNOME terminal and wait for the command to finish
-      final result = await Process.run('gnome-terminal', [
-        '--wait', // Wait for the command to finish
-        '--',
+      // final result = await Process.run('gnome-terminal', [
+      //   '--wait', // Wait for the command to finish
+      //   '--',
+      //   'bash',
+      //   '-c',
+      //   'echo updateed ; sleep 1; exit 0',
+      // ]);
+      final result = await Process.run(
         'bash',
-        '-c',
-        'echo updateed ; sleep 1; exit 0',
-      ]);
+        ['-c', 'echo updated && sleep 1 && exit 0'],
+      );
 
       // Check if the process completed successfully
       if (result.exitCode == 0) {
@@ -160,50 +164,49 @@ class _ListTyState extends State<ListTy> {
 
   // =============================================
 
- void handleAllTasks() async {
-  final tasks = getCurrentTasks();
+  void handleAllTasks() async {
+    final tasks = getCurrentTasks();
 
-  // Ensure there are tasks to execute
-  if (tasks.isEmpty) return;
+    // Ensure there are tasks to execute
+    if (tasks.isEmpty) return;
 
-  // Determine the start index based on the active container
-  int startIndex;
-  if (widget.activeContainer == 0) {
-    startIndex = currentTaskIndex1;
-  } else if (widget.activeContainer == 1) {
-    startIndex = currentTaskIndex2;
-  } else {
-    startIndex = currentTaskIndex3;
-  }
-
-  // Process tasks sequentially
-  for (int i = startIndex; i < tasks.length; i++) {
-    await handleNextTaskSequentially();
-
-    // Check if an error occurred during the task
-    if (processStatus == "error" || processStatus == "cerror") {
-      print("Task execution interrupted due to error.");
-      return;
+    // Determine the start index based on the active container
+    int startIndex;
+    if (widget.activeContainer == 0) {
+      startIndex = currentTaskIndex1;
+    } else if (widget.activeContainer == 1) {
+      startIndex = currentTaskIndex2;
+    } else {
+      startIndex = currentTaskIndex3;
     }
+
+    // Process tasks sequentially
+    for (int i = startIndex; i < tasks.length; i++) {
+      await handleNextTaskSequentially();
+
+      // Check if an error occurred during the task
+      if (processStatus == "error" || processStatus == "cerror") {
+        print("Task execution interrupted due to error.");
+        return;
+      }
+    }
+
+    // Mark process as finished
+    updateProcessStatus("finish");
   }
 
-  // Mark process as finished
-  updateProcessStatus("finish");
-}
+  Future<void> handleNextTaskSequentially() async {
+    // Wait for handleNextTask to complete by wrapping it in a Future
+    final completer = Completer<void>();
+    handleNextTask();
 
-Future<void> handleNextTaskSequentially() async {
-  // Wait for handleNextTask to complete by wrapping it in a Future
-  final completer = Completer<void>();
-  handleNextTask();
-  
-  // Wait for a small delay to simulate completion
-  Future.delayed(Duration(seconds: 1), () {
-    completer.complete();
-  });
+    // Wait for a small delay to simulate completion
+    Future.delayed(Duration(seconds: 1), () {
+      completer.complete();
+    });
 
-  return completer.future;
-}
-
+    return completer.future;
+  }
 
   // =-----=--------=--------=-------=--------=-------=
 
