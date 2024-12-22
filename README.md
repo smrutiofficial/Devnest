@@ -23,18 +23,16 @@ DevNest is a Linux desktop app developed in Flutter, designed to automate the se
 <div align="center">
    
    <picture>
-      <img src="./Readme_assets/s1.png" width="500" >
+      <img src="./Readme_assets/s1.png" width="auto" >
    </picture>
-  
    <picture>
-      <img src="./Readme_assets/s3.png" width="500" >
+      <img src="./Readme_assets/s3.png" width="auto" >
    </picture>
-  
    <picture>
-      <img src="./Readme_assets/s4.png" width="500">
+      <img src="./Readme_assets/s4.png" width="auto">
    </picture>
     <picture>
-      <img src="./Readme_assets/s2.png" width="500" >
+      <img src="./Readme_assets/s2.png" width="auto" >
    </picture>
 </div>
 
