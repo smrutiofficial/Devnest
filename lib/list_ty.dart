@@ -72,31 +72,41 @@ class _ListTyState extends State<ListTy> {
 
     // Ensure there is a current task to execute
     if (tasks.isEmpty) return;
+    final int taskIndex = widget.activeContainer == 1
+        ? currentTaskIndex2
+        : widget.activeContainer == 2
+            ? currentTaskIndex3
+            : currentTaskIndex1;
 
-    // Determine the current task based on the active container and task index
-    // final currentTask = (widget.activeContainer == 1)
-    //     ? tasks[currentTaskIndex1]
-    //     : (widget.activeContainer == 2)
-    //         ? tasks[currentTaskIndex2]
-    //         : tasks[currentTaskIndex3];
+    final currentTask = tasks[taskIndex];
 
     try {
       // setState(() {
       updateProcessStatus("processing");
       // processStatus = "processing";
       // });
-      // Open GNOME terminal and wait for the command to finish
-      // final result = await Process.run('gnome-terminal', [
-      //   '--wait', // Wait for the command to finish
-      //   '--',
-      //   'bash',
-      //   '-c',
-      //   'echo updateed ; sleep 1; exit 0',
-      // ]);
-      final result = await Process.run(
+  
+      // Determine the current task based on the active container and task index
+      // final currentTask = (widget.activeContainer == 1)
+      //     ? tasks[currentTaskIndex1]
+      //     : (widget.activeContainer == 2)
+      //         ? tasks[currentTaskIndex2]
+      //         : tasks[currentTaskIndex3];
+
+      // print("Current Task Command: ${currentTask.command}");
+  // Open GNOME terminal and wait for the command to finish
+      final result = await Process.run('gnome-terminal', [
+        '--wait', // Wait for the command to finish
+        '--',
         'bash',
-        ['-c', 'echo updated && sleep 1 && exit 0'],
-      );
+        '-c',
+        '${currentTask.command} && sleep 1 && exit 0',
+      ]);
+      // final result = await Process.run(
+      //   'bash',
+      //   ['-c', 'echo updated && sleep 1 && exit 0'],
+      // );
+      // print("Current Task Command: ${tasks[currentTaskIndex1].command}");
 
       // Check if the process completed successfully
       if (result.exitCode == 0) {
