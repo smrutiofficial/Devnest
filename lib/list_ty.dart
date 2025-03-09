@@ -85,7 +85,7 @@ class _ListTyState extends State<ListTy> {
       updateProcessStatus("processing");
       // processStatus = "processing";
       // });
-  
+
       // Determine the current task based on the active container and task index
       // final currentTask = (widget.activeContainer == 1)
       //     ? tasks[currentTaskIndex1]
@@ -94,14 +94,16 @@ class _ListTyState extends State<ListTy> {
       //         : tasks[currentTaskIndex3];
 
       // print("Current Task Command: ${currentTask.command}");
-  // Open GNOME terminal and wait for the command to finish
+      // Open GNOME terminal and wait for the command to finish
       final result = await Process.run('gnome-terminal', [
-        '--wait', // Wait for the command to finish
+        '--wait',
         '--',
         'bash',
+        '-i',
         '-c',
-        '${currentTask.command} && sleep 1 && exit 0',
+        '${currentTask.command}; exec bash'
       ]);
+
       // final result = await Process.run(
       //   'bash',
       //   ['-c', 'echo updated && sleep 1 && exit 0'],
